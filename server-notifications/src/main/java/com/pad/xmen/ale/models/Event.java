@@ -1,4 +1,4 @@
-package com.pad.teamx.models;
+package com.pad.xmen.ale.models;
 
 /**
  * @author Daniel Incicau, daniel.incicau@busymachines.com

@@ -1,4 +1,4 @@
-package com.pad.teamx;
+package com.pad.xmen.ale;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

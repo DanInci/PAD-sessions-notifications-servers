@@ -1,11 +1,11 @@
-package com.pad.teamx.controllers;
+package com.pad.xmen.ale.controllers;
 
-import com.pad.teamx.errors.NotFoundFailure;
-import com.pad.teamx.models.History;
-import com.pad.teamx.models.Player;
-import com.pad.teamx.models.Room;
-import com.pad.teamx.persistence.RoomDAO;
-import com.pad.teamx.persistence.RoomRepository;
+import com.pad.xmen.ale.errors.NotFoundFailure;
+import com.pad.xmen.ale.models.History;
+import com.pad.xmen.ale.models.Player;
+import com.pad.xmen.ale.models.Room;
+import com.pad.xmen.ale.persistence.RoomDAO;
+import com.pad.xmen.ale.persistence.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

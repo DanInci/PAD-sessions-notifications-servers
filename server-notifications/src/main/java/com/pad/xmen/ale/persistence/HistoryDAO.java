@@ -1,6 +1,6 @@
-package com.pad.teamx.persistence;
+package com.pad.xmen.ale.persistence;
 
-import com.pad.teamx.models.EventKey;
+import com.pad.xmen.ale.models.EventKey;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

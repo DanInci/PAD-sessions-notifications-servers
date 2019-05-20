@@ -1,4 +1,4 @@
-package com.pad.teamx.persistence;
+package com.pad.xmen.ale.persistence;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

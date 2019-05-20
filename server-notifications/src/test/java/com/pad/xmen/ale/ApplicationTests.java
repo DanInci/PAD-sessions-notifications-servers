@@ -1,4 +1,4 @@
-package com.pad.teamx;
+package com.pad.xmen.ale;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

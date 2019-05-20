@@ -1,21 +1,32 @@
-package com.pad.teamx.models;
+package com.pad.xmen.ale.persistence;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.UUID;
 
 /**
  * @author Daniel Incicau, daniel.incicau@busymachines.com
- * @since 2019-05-21
+ * @since 2019-05-20
  */
-public class Player {
+@Embeddable
+@Table(name = "players")
+public class PlayerDAO {
 
+    @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "score", columnDefinition = "int default 0")
     private Integer score;
 
+    @Column(name = "is_owner", columnDefinition = "boolean default 0")
     private Boolean isOwner;
 
-    public Player() {
+    public PlayerDAO() {
     }
 
-    public Player(String name, Integer score, Boolean isOwner) {
+    public PlayerDAO(String name, Integer score, Boolean isOwner) {
         this.name = name;
         this.score = score;
         this.isOwner = isOwner;

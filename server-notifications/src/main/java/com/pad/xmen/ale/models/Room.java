@@ -1,4 +1,4 @@
-package com.pad.teamx.models;
+package com.pad.xmen.ale.models;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,13 +1,13 @@
-package com.pad.teamx.controllers;
+package com.pad.xmen.ale.controllers;
 
-import com.pad.teamx.Application;
-import com.pad.teamx.models.Event;
-import com.pad.teamx.models.EventKey;
-import com.pad.teamx.models.Notification;
-import com.pad.teamx.persistence.HistoryDAO;
-import com.pad.teamx.persistence.PlayerDAO;
-import com.pad.teamx.persistence.RoomDAO;
-import com.pad.teamx.persistence.RoomRepository;
+import com.pad.xmen.ale.Application;
+import com.pad.xmen.ale.models.Event;
+import com.pad.xmen.ale.models.EventKey;
+import com.pad.xmen.ale.models.Notification;
+import com.pad.xmen.ale.persistence.HistoryDAO;
+import com.pad.xmen.ale.persistence.PlayerDAO;
+import com.pad.xmen.ale.persistence.RoomDAO;
+import com.pad.xmen.ale.persistence.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;

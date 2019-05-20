@@ -1,6 +1,4 @@
-package com.pad.teamx.models;
-
-import com.pad.teamx.models.EventKey;
+package com.pad.xmen.ale.models;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
