@@ -1,4 +1,4 @@
-package com.pad.sessions;
+package com.pad.teamx;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
