@@ -1,4 +1,4 @@
-package com.pad.xmen.ale;
+package com.pad.xmen.ale.notifications;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

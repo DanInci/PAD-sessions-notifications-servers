@@ -1,4 +1,4 @@
-package com.pad.xmen.ale.models;
+package com.pad.xmen.ale.notifications.models;
 
 import java.time.LocalDateTime;
 import java.util.List;

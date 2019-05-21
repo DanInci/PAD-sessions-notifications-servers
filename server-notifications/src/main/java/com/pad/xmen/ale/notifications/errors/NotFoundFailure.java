@@ -1,4 +1,4 @@
-package com.pad.xmen.ale.errors;
+package com.pad.xmen.ale.notifications.errors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

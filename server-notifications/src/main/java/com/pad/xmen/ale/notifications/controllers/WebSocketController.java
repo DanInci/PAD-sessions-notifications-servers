@@ -1,12 +1,9 @@
-package com.pad.xmen.ale.controllers;
+package com.pad.xmen.ale.notifications.controllers;
 
-import com.pad.xmen.ale.Application;
-import com.pad.xmen.ale.models.Event;
-import com.pad.xmen.ale.models.EventKey;
-import com.pad.xmen.ale.models.Notification;
-import com.pad.xmen.ale.models.Room;
-import com.pad.xmen.ale.persistence.*;
-import org.aspectj.weaver.ast.Not;
+import com.pad.xmen.ale.notifications.Application;
+import com.pad.xmen.ale.notifications.models.Event;
+import com.pad.xmen.ale.notifications.models.Notification;
+import com.pad.xmen.ale.notifications.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -70,6 +67,9 @@ public class WebSocketController {
 
                 notification = new Notification(roomId, event.getKey(), event.getParameters(), now);
             };
+        }
+        else {
+            Application.log.warn("Event was rejected");
         }
         return notification;
     }

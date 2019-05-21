@@ -1,4 +1,4 @@
-package com.pad.xmen.ale.persistence;
+package com.pad.xmen.ale.notifications.persistence;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;

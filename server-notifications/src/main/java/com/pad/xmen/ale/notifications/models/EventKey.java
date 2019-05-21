@@ -1,4 +1,4 @@
-package com.pad.xmen.ale.models;
+package com.pad.xmen.ale.notifications.models;
 
 /**
  * @author Daniel Incicau, daniel.incicau@busymachines.com

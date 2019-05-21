@@ -1,11 +1,11 @@
-package com.pad.xmen.ale.controllers;
+package com.pad.xmen.ale.notifications.controllers;
 
-import com.pad.xmen.ale.errors.NotFoundFailure;
-import com.pad.xmen.ale.models.History;
-import com.pad.xmen.ale.models.Player;
-import com.pad.xmen.ale.models.Room;
-import com.pad.xmen.ale.persistence.RoomDAO;
-import com.pad.xmen.ale.persistence.RoomRepository;
+import com.pad.xmen.ale.notifications.errors.NotFoundFailure;
+import com.pad.xmen.ale.notifications.models.History;
+import com.pad.xmen.ale.notifications.models.Player;
+import com.pad.xmen.ale.notifications.models.Room;
+import com.pad.xmen.ale.notifications.persistence.RoomDAO;
+import com.pad.xmen.ale.notifications.persistence.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

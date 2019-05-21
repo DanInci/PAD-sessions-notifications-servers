@@ -1,7 +1,6 @@
-package com.pad.xmen.ale.persistence;
+package com.pad.xmen.ale.notifications.persistence;
 
-import com.pad.xmen.ale.models.EventKey;
-import org.springframework.stereotype.Component;
+import com.pad.xmen.ale.notifications.models.EventKey;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

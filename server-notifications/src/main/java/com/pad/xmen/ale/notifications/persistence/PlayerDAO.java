@@ -1,4 +1,4 @@
-package com.pad.xmen.ale.persistence;
+package com.pad.xmen.ale.notifications.persistence;
 
 import javax.persistence.*;
 import java.util.UUID;
