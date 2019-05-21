@@ -10,7 +10,7 @@ import java.util.UUID;
  * @since 2019-05-20
  */
 @Entity
-@Table(name = "game_rooms")
+@Table(name = "rooms")
 public class RoomDAO {
 
     @Id
