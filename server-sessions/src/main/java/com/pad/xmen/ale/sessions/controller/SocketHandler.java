@@ -51,18 +51,18 @@ public class SocketHandler implements StompSessionHandler {
 
     @Override
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
-        Application.logger.info("New session established : " + session.getSessionId());
+        Application.log.info("New session established : " + session.getSessionId());
         this.session = session;
     }
 
     @Override
     public void handleException(StompSession session, StompCommand command, StompHeaders headers, byte[] payload, Throwable exception) {
-        Application.logger.error("Error: " + exception);
+        Application.log.error("Error: " + exception);
     }
 
     @Override
     public void handleTransportError(StompSession session, Throwable exception) {
-        Application.logger.error("Error: " + exception);
+        Application.log.error("Error: " + exception);
     }
 
     @Override
@@ -72,6 +72,6 @@ public class SocketHandler implements StompSessionHandler {
 
     @Override
     public void handleFrame(StompHeaders headers, Object payload) {
-        Application.logger.info("Received: " + payload);
+        Application.log.info("Received: " + payload);
     }
 }

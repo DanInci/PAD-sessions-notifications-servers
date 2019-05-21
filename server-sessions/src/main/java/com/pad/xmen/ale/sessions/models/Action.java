@@ -2,26 +2,27 @@ package com.pad.xmen.ale.sessions.models;
 
 /**
  * @author Daniel Incicau, daniel.incicau@busymachines.com
- * @since 2019-05-20
+ * @since 2019-05-21
  */
-public class Event {
+public class Action {
 
-    private EventKey key;
+    private ActionKey key;
 
     private String parameters;
 
-    public Event() {}
+    public Action() {
+    }
 
-    public Event(EventKey key, String parameters) {
+    public Action(ActionKey key, String parameters) {
         this.key = key;
         this.parameters = parameters;
     }
 
-    public EventKey getKey() {
+    public ActionKey getKey() {
         return key;
     }
 
-    public void setKey(EventKey key) {
+    public void setKey(ActionKey key) {
         this.key = key;
     }
 

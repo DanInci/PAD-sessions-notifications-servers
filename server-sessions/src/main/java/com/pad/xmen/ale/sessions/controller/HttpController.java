@@ -1,5 +1,6 @@
 package com.pad.xmen.ale.sessions.controller;
 
+import com.pad.xmen.ale.sessions.Application;
 import com.pad.xmen.ale.sessions.models.Event;
 import com.pad.xmen.ale.sessions.models.EventKey;
 import com.pad.xmen.ale.sessions.models.PlayerDefinition;
@@ -24,7 +25,7 @@ public class HttpController {
     private String dashboardUrl;
 
     @Autowired
-    private SocketHandler socket;
+    private SocketHandler eventSocket;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -34,12 +35,19 @@ public class HttpController {
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 
+    @PostMapping("/command/{roomId}")
+    public void sendCommand(@PathVariable UUID roomId, @RequestBody Event event) {
+        eventSocket.sendEvent(roomId, event);
+        Application.log.info("Sent event to room '" + roomId + "': " + event.toString());
+    }
+
     @PostMapping("/room")
     public ResponseEntity<PlayerDefinitionResponse> createRoom(@RequestBody PlayerDefinition definition) {
         UUID roomId = UUID.randomUUID();
         Event event = new Event(EventKey.CREATE, definition.getName());
 
-        socket.sendEvent(roomId, event);
+        eventSocket.sendEvent(roomId, event);
+        Application.log.info("Sent event to room '" + roomId + "': " + event.toString());
 
         String token = jwtUtil.generateToken(definition.getName(), roomId, true);
         String dashboardLink = dashboardUrl + "/" + roomId;
@@ -51,7 +59,8 @@ public class HttpController {
     public PlayerDefinitionResponse joinRoom(@PathVariable UUID roomId, @RequestBody PlayerDefinition definition) {
         Event event = new Event(EventKey.JOIN, definition.getName()); //check if name is not already joined
 
-        socket.sendEvent(roomId, event);
+        eventSocket.sendEvent(roomId, event);
+        Application.log.info("Sent event to room '" + roomId + "': " + event.toString());
 
         String token = jwtUtil.generateToken(definition.getName(), roomId, false);
         String dashboardLink = dashboardUrl + "/" + roomId;
