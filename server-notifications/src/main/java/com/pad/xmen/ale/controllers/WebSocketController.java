@@ -4,10 +4,7 @@ import com.pad.xmen.ale.Application;
 import com.pad.xmen.ale.models.Event;
 import com.pad.xmen.ale.models.EventKey;
 import com.pad.xmen.ale.models.Notification;
-import com.pad.xmen.ale.persistence.HistoryDAO;
-import com.pad.xmen.ale.persistence.PlayerDAO;
-import com.pad.xmen.ale.persistence.RoomDAO;
-import com.pad.xmen.ale.persistence.RoomRepository;
+import com.pad.xmen.ale.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -28,6 +25,12 @@ public class WebSocketController {
     @Autowired
     private RoomRepository roomRepository;
 
+    @Autowired
+    private PlayerRepository playerRepository;
+
+    @Autowired
+    private HistoryRepository historyRepository;
+
     @MessageMapping("/events/{roomId}")
     @SendTo("/notifications/{roomId}")
     public Notification processEvent(@DestinationVariable("roomId") UUID roomId, Event event) {
@@ -35,22 +38,30 @@ public class WebSocketController {
         Application.log.info("Received event: " + event.toString());
 
         switch (event.getKey()) {
+            case CREATE:
+                roomCreated(roomId, event, now);
+                break;
             case JOIN:
                 playerJoined(roomId, event, now);
+                break;
             case LEAVE:
                 playerLeft(roomId, event, now);
+                break;
             case START:
                gameStarted(roomId, event, now);
+                break;
             case ADD:
                 addScore(roomId, event, now);
+                break;
             case FINISH:
                 gameFinished(roomId, event, now);
+                break;
         }
 
         RoomDAO room = roomRepository.findById(roomId).get();
-        HistoryDAO history = new HistoryDAO(EventKey.CREATE, event.getParameters(), now);
-        room.getHistory().add(history);
-        roomRepository.save(room);
+
+        HistoryDAO history = new HistoryDAO(UUID.randomUUID(), room, event.getKey(), event.getParameters(), now);
+        historyRepository.save(history);
 
         return new Notification(roomId, event.getKey(), event.getParameters(), now);
     }
@@ -69,9 +80,9 @@ public class WebSocketController {
         for(PlayerDAO playerDAO : room.getPlayers()) {
             if(playerDAO.getName().equals(name)) {
                 playerDAO.setScore(playerDAO.getScore() + score);
+                playerRepository.save(playerDAO);
             }
         }
-        roomRepository.save(room);
     }
 
     private void gameStarted(UUID roomId, Event event, LocalDateTime now) {
@@ -82,25 +93,28 @@ public class WebSocketController {
 
     private void playerLeft(UUID roomId, Event event, LocalDateTime now) {
         RoomDAO room = roomRepository.findById(roomId).get();
-        room.getPlayers().removeIf(playerDAO -> playerDAO.getName().equals(event.getParameters()));
-        roomRepository.save(room);
+        List<PlayerDAO> players = room.getPlayers();
+        for(PlayerDAO player : players) {
+            if(player.getName().equals(event.getParameters())) {
+                playerRepository.delete(player);
+                players.remove(player);
+                roomRepository.save(room);
+            }
+        }
     }
 
     private void playerJoined(UUID roomId, Event event, LocalDateTime now) {
         RoomDAO room = roomRepository.findById(roomId).get();
-        PlayerDAO player = new PlayerDAO(event.getParameters(), 0, false);
-        room.getPlayers().add(player);
 
-        roomRepository.save(room);
+        PlayerDAO player = new PlayerDAO(UUID.randomUUID(), room, event.getParameters(), 0, false);
+        playerRepository.save(player);
     }
 
     private void roomCreated(UUID roomId, Event event, LocalDateTime now) {
         RoomDAO room = new RoomDAO(roomId, now);
-        room.setHistory(new ArrayList<>());
-
-        PlayerDAO player = new PlayerDAO(event.getParameters(), 0, true);
-        room.setPlayers(Collections.singletonList(player));
-
         roomRepository.save(room);
+
+        PlayerDAO player = new PlayerDAO(UUID.randomUUID(), room, event.getParameters(), 0, true);
+        playerRepository.save(player);
     }
 }

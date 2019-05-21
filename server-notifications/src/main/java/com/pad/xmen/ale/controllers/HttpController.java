@@ -34,7 +34,7 @@ public class HttpController {
             roomDAO.getPlayers().forEach(playerDAO -> {
                 players.add(new Player(playerDAO.getName(), playerDAO.getScore(), playerDAO.getOwner()));
             });
-            rooms.add(new Room(players, roomDAO.getCreatedAt(), roomDAO.getStartedAt(), roomDAO.getFinishedAt()));
+            rooms.add(new Room(roomDAO.getId(), players, roomDAO.getCreatedAt(), roomDAO.getStartedAt(), roomDAO.getFinishedAt()));
         });
         return rooms;
     }
@@ -50,7 +50,7 @@ public class HttpController {
             players.add(new Player(playerDAO.getName(), playerDAO.getScore(), playerDAO.getOwner()));
         });
 
-        return new Room(players, roomDAO.getCreatedAt(), roomDAO.getStartedAt(), roomDAO.getFinishedAt());
+        return new Room(roomDAO.getId(), players, roomDAO.getCreatedAt(), roomDAO.getStartedAt(), roomDAO.getFinishedAt());
     }
 
     @GetMapping("/room/{roomId}/history")

@@ -1,18 +1,22 @@
 package com.pad.xmen.ale.persistence;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
 /**
  * @author Daniel Incicau, daniel.incicau@busymachines.com
  * @since 2019-05-20
  */
-@Embeddable
+@Entity
 @Table(name = "players")
 public class PlayerDAO {
+
+    @Id
+    @Column(name = "id")
+    private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private RoomDAO room;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -26,10 +30,28 @@ public class PlayerDAO {
     public PlayerDAO() {
     }
 
-    public PlayerDAO(String name, Integer score, Boolean isOwner) {
+    public PlayerDAO(UUID id, RoomDAO room, String name, Integer score, Boolean isOwner) {
+        this.id = id;
+        this.room = room;
         this.name = name;
         this.score = score;
         this.isOwner = isOwner;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public RoomDAO getRoom() {
+        return room;
+    }
+
+    public void setRoom(RoomDAO room) {
+        this.room = room;
     }
 
     public String getName() {

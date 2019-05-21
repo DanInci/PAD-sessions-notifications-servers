@@ -2,6 +2,8 @@ package com.pad.xmen.ale;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
@@ -10,12 +12,13 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
  * @since 2019-05-20
  */
 @Configuration
+@EnableScheduling
+@EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/notifications");
-        config.setApplicationDestinationPrefixes("/app");
     }
 
     @Override

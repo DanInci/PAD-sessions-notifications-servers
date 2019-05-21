@@ -5,6 +5,7 @@ import com.pad.xmen.ale.persistence.RoomRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,7 +25,7 @@ public class Application {
 	@Autowired
 	private RoomRepository roomRepository;
 
-	@Scheduled(initialDelay = 60000, fixedDelay = 300000)
+	@Scheduled(initialDelay = 60000, fixedDelay = 600000)
 	public void cleanRooms() {
 		LocalDateTime now = LocalDateTime.now();
 		int cleanedRoomNo = 0;

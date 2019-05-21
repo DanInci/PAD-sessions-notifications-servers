@@ -10,6 +10,8 @@ public class Event {
 
     private String parameters;
 
+    public Event() {}
+
     public Event(EventKey key, String parameters) {
         this.key = key;
         this.parameters = parameters;
@@ -33,6 +35,11 @@ public class Event {
 
     @Override
     public String toString() {
-        return key + " with " + parameters;
+        if(parameters != null) {
+            return key + " with arguments '" + parameters + "'";
+        }
+        else {
+            return key.toString();
+        }
     }
 }

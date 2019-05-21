@@ -3,6 +3,8 @@ package com.pad.xmen.ale.persistence;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.UUID;
 
 /**
@@ -17,12 +19,12 @@ public class RoomDAO {
     @Column(name = "id")
     private UUID id;
 
-    @ElementCollection
-    @CollectionTable(name="Players", joinColumns=@JoinColumn(name="roomId"))
+    @OrderBy("name ASC")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, mappedBy = "room")
     private List<PlayerDAO> players;
 
-    @ElementCollection
-    @CollectionTable(name="History", joinColumns=@JoinColumn(name="roomId"))
+    @OrderBy("at ASC")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "room")
     private List<HistoryDAO> history;
 
     @Column(name = "created_at", nullable = false)
