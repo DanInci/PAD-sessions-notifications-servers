@@ -1,4 +1,4 @@
-package com.pad.xmen.ale;
+package com.pad.xmen.ale.sessions;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

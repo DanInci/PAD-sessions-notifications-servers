@@ -1,7 +1,7 @@
-package com.pad.xmen.ale.controller;
+package com.pad.xmen.ale.sessions.controller;
 
-import com.pad.xmen.ale.Application;
-import com.pad.xmen.ale.models.Event;
+import com.pad.xmen.ale.sessions.Application;
+import com.pad.xmen.ale.sessions.models.Event;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompCommand;

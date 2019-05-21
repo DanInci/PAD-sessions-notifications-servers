@@ -1,4 +1,4 @@
-package com.pad.xmen.ale;
+package com.pad.xmen.ale.sessions;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;

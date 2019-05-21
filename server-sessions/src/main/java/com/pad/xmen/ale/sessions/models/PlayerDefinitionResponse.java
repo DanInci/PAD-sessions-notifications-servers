@@ -6,16 +6,16 @@ import java.util.UUID;
  * @author Daniel Incicau, daniel.incicau@busymachines.com
  * @since 2019-05-21
  */
-public class RoomDefinitionResponse {
+public class PlayerDefinitionResponse {
 
     private String token;
     private UUID roomId;
     private String dashboardUrl;
 
-    public RoomDefinitionResponse() {
+    public PlayerDefinitionResponse() {
     }
 
-    public RoomDefinitionResponse(String token, UUID roomId, String dashboardUrl) {
+    public PlayerDefinitionResponse(String token, UUID roomId, String dashboardUrl) {
         this.token = token;
         this.roomId = roomId;
         this.dashboardUrl = dashboardUrl;

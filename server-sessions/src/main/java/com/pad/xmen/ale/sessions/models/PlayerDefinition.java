@@ -4,14 +4,14 @@ package com.pad.xmen.ale.sessions.models;
  * @author Daniel Incicau, daniel.incicau@busymachines.com
  * @since 2019-05-21
  */
-public class RoomDefinition {
+public class PlayerDefinition {
 
     private String name;
 
-    public RoomDefinition() {
+    public PlayerDefinition() {
     }
 
-    public RoomDefinition(String name) {
+    public PlayerDefinition(String name) {
         this.name = name;
     }
 

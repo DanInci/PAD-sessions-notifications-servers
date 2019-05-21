@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/server-sessions.iml" filepath="$PROJECT_DIR$/server-sessions.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/server-sessions.main.iml" filepath="$PROJECT_DIR$/.idea/modules/server-sessions.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/server-sessions.test.iml" filepath="$PROJECT_DIR$/.idea/modules/server-sessions.test.iml" />
     </modules>
   </component>
 </project>
