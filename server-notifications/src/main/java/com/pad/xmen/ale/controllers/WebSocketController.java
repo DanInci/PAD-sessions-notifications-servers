@@ -4,7 +4,9 @@ import com.pad.xmen.ale.Application;
 import com.pad.xmen.ale.models.Event;
 import com.pad.xmen.ale.models.EventKey;
 import com.pad.xmen.ale.models.Notification;
+import com.pad.xmen.ale.models.Room;
 import com.pad.xmen.ale.persistence.*;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -37,84 +39,148 @@ public class WebSocketController {
         LocalDateTime now = LocalDateTime.now(Clock.systemUTC());
         Application.log.info("Received event: " + event.toString());
 
+        boolean successfull = false;
+        Notification notification = null;
         switch (event.getKey()) {
             case CREATE:
-                roomCreated(roomId, event, now);
+                successfull = roomCreated(roomId, event, now);
                 break;
             case JOIN:
-                playerJoined(roomId, event, now);
+                successfull = playerJoined(roomId, event, now);
                 break;
             case LEAVE:
-                playerLeft(roomId, event, now);
+                successfull = playerLeft(roomId, event, now);
                 break;
             case START:
-               gameStarted(roomId, event, now);
+                successfull = gameStarted(roomId, event, now);
                 break;
             case ADD:
-                addScore(roomId, event, now);
+                successfull = addScore(roomId, event, now);
                 break;
             case FINISH:
-                gameFinished(roomId, event, now);
+                successfull = gameFinished(roomId, event, now);
                 break;
         }
 
-        RoomDAO room = roomRepository.findById(roomId).get();
+        if(successfull) {
+            Optional<RoomDAO> maybeRoom = roomRepository.findById(roomId);
+            if(maybeRoom.isPresent()) {
+                HistoryDAO history = new HistoryDAO(UUID.randomUUID(), maybeRoom.get(), event.getKey(), event.getParameters(), now);
+                historyRepository.save(history);
 
-        HistoryDAO history = new HistoryDAO(UUID.randomUUID(), room, event.getKey(), event.getParameters(), now);
-        historyRepository.save(history);
-
-        return new Notification(roomId, event.getKey(), event.getParameters(), now);
-    }
-
-    private void gameFinished(UUID roomId, Event event, LocalDateTime now) {
-        RoomDAO room = roomRepository.findById(roomId).get();
-        room.setFinishedAt(now);
-        roomRepository.save(room);
-    }
-
-    private void addScore(UUID roomId, Event event, LocalDateTime now) {
-        RoomDAO room = roomRepository.findById(roomId).get();
-        String[] split = event.getParameters().split(" ");
-        String name = split[0];
-        Integer score = Integer.valueOf(split[1]);
-        for(PlayerDAO playerDAO : room.getPlayers()) {
-            if(playerDAO.getName().equals(name)) {
-                playerDAO.setScore(playerDAO.getScore() + score);
-                playerRepository.save(playerDAO);
-            }
+                notification = new Notification(roomId, event.getKey(), event.getParameters(), now);
+            };
         }
+        return notification;
     }
 
-    private void gameStarted(UUID roomId, Event event, LocalDateTime now) {
-        RoomDAO room = roomRepository.findById(roomId).get();
-        room.setStartedAt(now);
-        roomRepository.save(room);
-    }
-
-    private void playerLeft(UUID roomId, Event event, LocalDateTime now) {
-        RoomDAO room = roomRepository.findById(roomId).get();
-        List<PlayerDAO> players = room.getPlayers();
-        for(PlayerDAO player : players) {
-            if(player.getName().equals(event.getParameters())) {
-                playerRepository.delete(player);
-                players.remove(player);
+    private boolean gameFinished(UUID roomId, Event event, LocalDateTime now) {
+        Optional<RoomDAO> maybeRoom = roomRepository.findById(roomId);
+        if(maybeRoom.isPresent()) {
+            RoomDAO room = maybeRoom.get();
+            if(isGameStarted(room) && !isGameFinished(room)) {
+                room.setFinishedAt(now);
                 roomRepository.save(room);
+                return true;
             }
         }
+        return false;
     }
 
-    private void playerJoined(UUID roomId, Event event, LocalDateTime now) {
-        RoomDAO room = roomRepository.findById(roomId).get();
-
-        PlayerDAO player = new PlayerDAO(UUID.randomUUID(), room, event.getParameters(), 0, false);
-        playerRepository.save(player);
+    private boolean addScore(UUID roomId, Event event, LocalDateTime now) {
+        Optional<RoomDAO> maybeRoom = roomRepository.findById(roomId);
+        if(maybeRoom.isPresent()) {
+            RoomDAO room = maybeRoom.get();
+            String[] split = event.getParameters().split(" ");
+            String name = split[0];
+            Integer score = Integer.valueOf(split[1]);
+            for(PlayerDAO playerDAO : room.getPlayers()) {
+                if(playerDAO.getName().equals(name)) {
+                    playerDAO.setScore(playerDAO.getScore() + score);
+                    playerRepository.save(playerDAO);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
-    private void roomCreated(UUID roomId, Event event, LocalDateTime now) {
-        RoomDAO room = new RoomDAO(roomId, now);
-        roomRepository.save(room);
+    private boolean gameStarted(UUID roomId, Event event, LocalDateTime now) {
+        Optional<RoomDAO> maybeRoom = roomRepository.findById(roomId);
+        if(maybeRoom.isPresent()) {
+            RoomDAO room = maybeRoom.get();
+            if(isGameStarted(room)) {
+                room.setStartedAt(now);
+                roomRepository.save(room);
+                return true;
+            }
+        }
+        return false;
+    }
 
-        PlayerDAO player = new PlayerDAO(UUID.randomUUID(), room, event.getParameters(), 0, true);
-        playerRepository.save(player);
+    private boolean playerLeft(UUID roomId, Event event, LocalDateTime now) {
+        Optional<RoomDAO> maybeRoom = roomRepository.findById(roomId);
+        if(maybeRoom.isPresent()) {
+            RoomDAO room = maybeRoom.get();
+            if(!isGameFinished(room)) {
+                List<PlayerDAO> players = room.getPlayers();
+                for(PlayerDAO player : players) {
+                    if(player.getName().equals(event.getParameters())) {
+                        playerRepository.delete(player);
+                        if(player.getOwner()) {
+                            room.setFinishedAt(now);
+                            roomRepository.save(room);
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean playerJoined(UUID roomId, Event event, LocalDateTime now) {
+        Optional<RoomDAO> maybeRoom = roomRepository.findById(roomId);
+        if(maybeRoom.isPresent()) {
+            RoomDAO room = maybeRoom.get();
+            if(!isGameStarted(room)) {
+                if(!doesPlayerExist(room.getPlayers(), event.getParameters())) {
+                    if(!isGameFinished(room)) {
+                        PlayerDAO player = new PlayerDAO(UUID.randomUUID(), room, event.getParameters(), 0, false);
+                        playerRepository.save(player);
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean roomCreated(UUID roomId, Event event, LocalDateTime now) {
+        if(!roomRepository.findById(roomId).isPresent()) {
+            RoomDAO room = new RoomDAO(roomId, now);
+            roomRepository.save(room);
+
+            PlayerDAO player = new PlayerDAO(UUID.randomUUID(), room, event.getParameters(), 0, true);
+            playerRepository.save(player);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isGameFinished(RoomDAO room) {
+        return room.getFinishedAt() != null;
+    }
+
+    private boolean isGameStarted(RoomDAO room) {
+        return room.getStartedAt() != null;
+    }
+
+    private boolean doesPlayerExist(List<PlayerDAO> players, String name) {
+        for(PlayerDAO player : players) {
+            if(player.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

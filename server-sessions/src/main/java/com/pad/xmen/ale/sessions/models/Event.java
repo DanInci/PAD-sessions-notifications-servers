@@ -10,6 +10,8 @@ public class Event {
 
     private String parameters;
 
+    public Event() {}
+
     public Event(EventKey key, String parameters) {
         this.key = key;
         this.parameters = parameters;

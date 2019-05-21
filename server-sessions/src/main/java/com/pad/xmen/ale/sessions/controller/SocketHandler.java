@@ -16,7 +16,6 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.Type;
-import java.util.Scanner;
 import java.util.UUID;
 
 /**
@@ -26,7 +25,7 @@ import java.util.UUID;
 @Component
 public class SocketHandler implements StompSessionHandler {
 
-    @Value("${notifications.server}")
+    @Value("${notifications.server.socket.url}")
     private String notificationsServerUrl;
 
     @PostConstruct
@@ -36,10 +35,8 @@ public class SocketHandler implements StompSessionHandler {
         stompClient.setMessageConverter(new MappingJackson2MessageConverter());
         stompClient.setTaskScheduler(new ConcurrentTaskScheduler());
 
-        String url = "ws://" + notificationsServerUrl + "/event";
+        String url = "ws://" + notificationsServerUrl;
         stompClient.connect(url, this);
-
-        new Scanner(System.in).nextLine(); //Don't close immediately.
     }
 
     private StompSession session;
