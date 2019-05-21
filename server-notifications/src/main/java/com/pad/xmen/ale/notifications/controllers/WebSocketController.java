@@ -36,30 +36,30 @@ public class WebSocketController {
         LocalDateTime now = LocalDateTime.now(Clock.systemUTC());
         Application.log.info("Received event: " + event.toString());
 
-        boolean successfull = false;
+        boolean successful = false;
         Notification notification = null;
         switch (event.getKey()) {
             case CREATE:
-                successfull = roomCreated(roomId, event, now);
+                successful = roomCreated(roomId, event, now);
                 break;
             case JOIN:
-                successfull = playerJoined(roomId, event, now);
+                successful = playerJoined(roomId, event, now);
                 break;
             case LEAVE:
-                successfull = playerLeft(roomId, event, now);
+                successful = playerLeft(roomId, event, now);
                 break;
             case START:
-                successfull = gameStarted(roomId, event, now);
+                successful = gameStarted(roomId, event, now);
                 break;
             case ADD:
-                successfull = addScore(roomId, event, now);
+                successful = addScore(roomId, event, now);
                 break;
             case FINISH:
-                successfull = gameFinished(roomId, event, now);
+                successful = gameFinished(roomId, event, now);
                 break;
         }
 
-        if(successfull) {
+        if(successful) {
             Optional<RoomDAO> maybeRoom = roomRepository.findById(roomId);
             if(maybeRoom.isPresent()) {
                 HistoryDAO history = new HistoryDAO(UUID.randomUUID(), maybeRoom.get(), event.getKey(), event.getParameters(), now);
@@ -91,14 +91,16 @@ public class WebSocketController {
         Optional<RoomDAO> maybeRoom = roomRepository.findById(roomId);
         if(maybeRoom.isPresent()) {
             RoomDAO room = maybeRoom.get();
-            String[] split = event.getParameters().split(" ");
-            String name = split[0];
-            Integer score = Integer.valueOf(split[1]);
-            for(PlayerDAO playerDAO : room.getPlayers()) {
-                if(playerDAO.getName().equals(name)) {
-                    playerDAO.setScore(playerDAO.getScore() + score);
-                    playerRepository.save(playerDAO);
-                    return true;
+            if(isGameStarted(room) && !isGameFinished(room)) {
+                String[] split = event.getParameters().split(" ");
+                String name = split[0];
+                Integer score = Integer.valueOf(split[1]);
+                for(PlayerDAO playerDAO : room.getPlayers()) {
+                    if(playerDAO.getName().equals(name)) {
+                        playerDAO.setScore(playerDAO.getScore() + score);
+                        playerRepository.save(playerDAO);
+                        return true;
+                    }
                 }
             }
         }
@@ -109,7 +111,7 @@ public class WebSocketController {
         Optional<RoomDAO> maybeRoom = roomRepository.findById(roomId);
         if(maybeRoom.isPresent()) {
             RoomDAO room = maybeRoom.get();
-            if(isGameStarted(room)) {
+            if(!isGameStarted(room)) {
                 room.setStartedAt(now);
                 roomRepository.save(room);
                 return true;
@@ -148,6 +150,7 @@ public class WebSocketController {
                     if(!isGameFinished(room)) {
                         PlayerDAO player = new PlayerDAO(UUID.randomUUID(), room, event.getParameters(), 0, false);
                         playerRepository.save(player);
+                        return true;
                     }
                 }
             }
