@@ -50,7 +50,7 @@ public class HttpController {
         Application.log.info("Sent event for room '" + roomId + "': " + event.toString());
 
         String token = jwtUtil.generateUsersToken(definition.getName(), roomId, true);
-        String dashboardLink = dashboardUrl + "/" + roomId;
+        String dashboardLink = dashboardUrl + "/room/" + roomId;
         PlayerDefinitionResponse response = new PlayerDefinitionResponse(token, roomId, dashboardLink);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -66,6 +66,5 @@ public class HttpController {
         String dashboardLink = dashboardUrl + "/" + roomId;
         return new PlayerDefinitionResponse(token, roomId, dashboardLink);
     }
-
 
 }
