@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import java.time.Clock;
@@ -34,6 +35,7 @@ public class WebSocketController {
     @SendTo("/notifications/{roomId}")
     public Notification processEvent(@DestinationVariable("roomId") UUID roomId, Event event) {
         LocalDateTime now = LocalDateTime.now(Clock.systemUTC());
+
         Application.log.info("Received event: " + event.toString());
 
         boolean successful = false;
