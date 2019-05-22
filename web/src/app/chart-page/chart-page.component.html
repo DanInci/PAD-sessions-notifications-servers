@@ -1,0 +1,13 @@
+
+
+<div *ngIf="room" style="display: block">
+  <canvas mdbChart
+          [chartType]="chartType"
+          [datasets]="chartDatasets"
+          [labels]="chartLabels"
+          [colors]="chartColors"
+          [options]="chartOptions"
+          (chartHover)="chartHovered($event)">
+  </canvas>
+</div>
+
