@@ -19,14 +19,13 @@ public class WebSocketAuthenticator{
     @Autowired
     private JwtUtil jwtUtil;
 
-    // This method MUST return a UsernamePasswordAuthenticationToken instance, the spring security chain is testing it with 'instanceof' later on. So don't use a subclass of it or any other class
     UsernamePasswordAuthenticationToken getAuthenticatedOrFail(final String token) throws AuthenticationException {
-        if (token != null && jwtUtil.validateToken(token)) {
-            AuthCtx auth = jwtUtil.parseToken(token);
-            SecurityContextHolder.getContext().setAuthentication(auth);
-
-            return new UsernamePasswordAuthenticationToken(auth, null, Collections.singleton((GrantedAuthority) () -> "USER"));
+        if(!jwtUtil.validateToken(token)) {
+            throw new JwtAuthenticationException("Expired JWT token");
         }
-        throw new JwtAuthenticationException("Missing JWT token");
+        AuthCtx auth = jwtUtil.parseToken(token);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        return new UsernamePasswordAuthenticationToken(auth, null, Collections.singleton((GrantedAuthority) () -> "USER"));
     }
 }

@@ -41,7 +41,7 @@ public class WebSocketController {
                     Event event = new Event(EventKey.START, null);
                     UUID roomId = authCtx.getRoomId();
                     eventSocket.sendEvent(roomId, event);
-                    Application.log.info("Sent event to room '" + roomId + "': " + event.toString());
+                    Application.log.info("Sent event for room '" + roomId + "': " + event.toString());
 
                     Integer gameSeconds = Integer.valueOf(action.getParameters());
                     Date finishTime = new Date(now.getTime() + gameSeconds * 1000);
@@ -52,7 +52,7 @@ public class WebSocketController {
                 Event event = new Event(EventKey.ADD, action.getParameters() + " 10");
                 UUID roomId = authCtx.getRoomId();
                 eventSocket.sendEvent(roomId, event);
-                Application.log.info("Sent event to room '" + roomId + "': " + event.toString());
+                Application.log.info("Sent event for room '" + roomId + "': " + event.toString());
                 break;
             }
         }
@@ -71,7 +71,7 @@ public class WebSocketController {
         return () -> {
             Event event = new Event(EventKey.FINISH, null);
             eventSocket.sendEvent(roomId, event);
-            Application.log.info("Sent event to room '" + roomId + "': " + event.toString());
+            Application.log.info("Sent event for room '" + roomId + "': " + event.toString());
         };
     }
 }

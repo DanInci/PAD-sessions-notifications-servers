@@ -38,6 +38,6 @@ public class SessionDisconnectEventListener implements ApplicationListener<Sessi
 
         Event event = new Event(EventKey.LEAVE, name);
         eventSocket.sendEvent(roomId, event);
-        Application.log.info("Sent event to room '" + roomId + "': " + event.toString());
+        Application.log.info("Sent event for room '" + roomId + "': " + event.toString());
     }
 }

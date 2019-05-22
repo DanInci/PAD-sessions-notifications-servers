@@ -38,7 +38,7 @@ public class HttpController {
     @PostMapping("/command/{roomId}")
     public void sendCommand(@PathVariable UUID roomId, @RequestBody Event event) {
         eventSocket.sendEvent(roomId, event);
-        Application.log.info("Sent event to room '" + roomId + "': " + event.toString());
+        Application.log.info("Sent event for room '" + roomId + "': " + event.toString());
     }
 
     @PostMapping("/room")
@@ -47,9 +47,9 @@ public class HttpController {
         Event event = new Event(EventKey.CREATE, definition.getName());
 
         eventSocket.sendEvent(roomId, event);
-        Application.log.info("Sent event to room '" + roomId + "': " + event.toString());
+        Application.log.info("Sent event for room '" + roomId + "': " + event.toString());
 
-        String token = jwtUtil.generateToken(definition.getName(), roomId, true);
+        String token = jwtUtil.generateUsersToken(definition.getName(), roomId, true);
         String dashboardLink = dashboardUrl + "/" + roomId;
         PlayerDefinitionResponse response = new PlayerDefinitionResponse(token, roomId, dashboardLink);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -60,9 +60,9 @@ public class HttpController {
         Event event = new Event(EventKey.JOIN, definition.getName()); //check if name is not already joined
 
         eventSocket.sendEvent(roomId, event);
-        Application.log.info("Sent event to room '" + roomId + "': " + event.toString());
+        Application.log.info("Sent event for room '" + roomId + "': " + event.toString());
 
-        String token = jwtUtil.generateToken(definition.getName(), roomId, false);
+        String token = jwtUtil.generateUsersToken(definition.getName(), roomId, false);
         String dashboardLink = dashboardUrl + "/" + roomId;
         return new PlayerDefinitionResponse(token, roomId, dashboardLink);
     }

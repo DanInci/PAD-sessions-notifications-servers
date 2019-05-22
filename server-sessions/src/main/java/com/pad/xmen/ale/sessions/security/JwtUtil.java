@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.UUID;
 
@@ -14,16 +15,34 @@ import java.util.UUID;
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret-key}")
-    private String secretKey;
+    @Value("${jwt.server.secret-key}")
+    private String serverSecretKey;
 
-    @Value("${jwt.expire-length:1800000}")
-    private long validityInMilliseconds;
+    @Value("${jwt.users.secret-key}")
+    private String usersSecretKey;
+
+    @Value("${jwt.users.expire-length:1800000}")
+    private long usersTokenValidity;
+
+    @Value("${server.name}")
+    private String serverName;
+
+    private String serverToken;
+
+    @PostConstruct
+    private void generateServerToken() {
+        Claims claims = Jwts.claims().setSubject(serverName);
+
+        this.serverToken = Jwts.builder()
+                .setClaims(claims)
+                .signWith(SignatureAlgorithm.HS512, serverSecretKey)
+                .compact();
+    }
 
     AuthCtx parseToken(String token) {
         try {
             Claims body = Jwts.parser()
-                    .setSigningKey(secretKey)
+                    .setSigningKey(usersSecretKey)
                     .parseClaimsJws(token)
                     .getBody();
 
@@ -42,29 +61,33 @@ public class JwtUtil {
         }
     }
 
-    public String generateToken(String name, UUID roomId, Boolean isOwner) {
+    public String generateUsersToken(String name, UUID roomId, Boolean isOwner) {
         Claims claims = Jwts.claims().setSubject(name);
         claims.put("roomId", roomId);
         claims.put("isOwner", isOwner);
 
         Date now = new Date();
-        Date validUntil = new Date(now.getTime() + validityInMilliseconds);
+        Date validUntil = new Date(now.getTime() + usersTokenValidity);
 
         claims.put("expiresAt", validUntil);
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(validUntil)
-                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .signWith(SignatureAlgorithm.HS512, usersSecretKey)
                 .compact();
+    }
+
+    public String getServerToken() {
+        return this.serverToken;
     }
 
     boolean validateToken(String token) throws JwtAuthenticationException {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            Jws<Claims> claims = Jwts.parser().setSigningKey(usersSecretKey).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            throw new JwtAuthenticationException("Expired or invalid JWT token");
+            throw new JwtAuthenticationException("Invalid JWT token");
         }
     }
 

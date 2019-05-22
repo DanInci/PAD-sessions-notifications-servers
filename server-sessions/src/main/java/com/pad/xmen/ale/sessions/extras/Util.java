@@ -9,5 +9,8 @@ import java.text.SimpleDateFormat;
  */
 public class Util {
 
+    public static final String X_AUTH_TOKEN = "X-AUTH-TOKEN";
+
     public static DateFormat dateFormatter = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+
 }
